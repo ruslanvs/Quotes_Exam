@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quotes</title>
+</head>
+<body>
+    <div class="header">
+        <p>Welcome, {{ alias }}</p>
+        <a href="/python_belt/logout">Logout</a>
+    </div>
+    {% if messages %}
+        {% for msg in messages %}
+            {{ msg.message }}
+        {% endfor %}
+    {% endif %}
+    <h1>Quotable Quotes</h1>
+
+    {% for quote in quotable_quotes %}
+        <hr>
+        {{ quote.content }}
+        <p>Posted by <a href="/python_belt/users/{{ quote.user.id }}/show">{{ quote.user.alias }}</a></p> 
+        <a class="action_link" href="quotes/{{ quote.id }}/fav">Add to my list</a> 
+    {% endfor %}
+
+    <hr>
+    <h1>Your Favorites</h1>
+    {% for quote in fav_quotes %}
+        <hr>
+        {{ quote.content }}
+        <p>Posted by <a href="/python_belt/users/{{ quote.user.id }}/show">{{ quote.user.alias }}</a></p> 
+        <a class="action_link" href="quotes/{{ quote.id }}/unfav">Remove from my list</a> 
+    {% endfor %}
+    
+    <hr>
+
+    <h2>Contribute a quote:</h2>
+
+    <form action="/python_belt/quotes/create" method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="author">Quoted By:</label>
+            <input type="text" name="author" id="author">
+        </div>
+    
+        <div>
+            <label for="content">Message:</label>
+            <input type="text" name="content" id="content">
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+    
+</body>
+</html>

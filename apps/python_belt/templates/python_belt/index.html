@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login and Registration</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+
+    <h2>Register</h2>
+    {% if messages %}
+        {% for msg in messages %}
+            {{ msg }}
+        {% endfor %}
+    {% endif %}
+
+    <form action="/python_belt/signup" method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name">
+        </div>
+
+        <div>
+            <label for="alias">Alias:</label>
+            <input type="text" name="alias" id="alias">
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" id="email">
+        </div>
+
+        <div>
+            <label for="pw">Password:</label>
+            <input type="password" name="pw" id="pw">
+        </div>
+        <p class="footnote">*Password should be at least 8 characters</p>
+
+        <div>
+            <label for="pwc">Confirm PW:</label>
+            <input type="password" name="pwc" id="pwc">
+        </div>
+
+        <div>
+            <label for="bd">Date of Birth:</label>
+            <input type="date" name="bd" id="bd">
+        </div>
+
+        <input type="submit" value="Register">
+
+    </form>
+    <hr>
+    <h2>Login</h2>
+    <form action="/python_belt/login" method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="l_email">Email:</label>
+            <input type="text" name="email" id="l_email">
+        </div>
+
+        <div>
+            <label for="l_pw">Password:</label>
+            <input type="password" name="pw" id="l_pw">
+        </div>
+        <input type="submit" value="Login">
+
+    </form>
+</body>
+</html>

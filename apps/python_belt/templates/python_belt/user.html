@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ alias }}</title>
+</head>
+<body>
+    <div class="header">
+        <p>Welcome, {{ alias }}</p>
+        <a href="/python_belt/quotes">Dashboard</a>
+        <a href="/python_belt/logout">Logout</a>
+    </div>
+
+    <h1>Posts by {{ fav_quotes.faved_users.alias }}</h1>
+    <h2>Count = {{ count }}</h2>
+    
+    {% for quote in fav_quotes %}
+    <p>{{quote.author}}: {{quote.content}}</p>
+        
+    {% endfor %}
+
+
+</body>
+</html>
