@@ -49,33 +49,60 @@ def quotes( request ):
         return redirect( "/python_belt" )
     else:
         print '*'*25, 'QUOTES, LOGGES IN USER:', request.session['logged_in_user_id']
+        user = User.objects.get( id = request.session['logged_in_user_id'] )
         page_data = {
-            "alias": User.objects.get( id = request.session['logged_in_user_id'] ).alias,
-            "users": User.objects.all(),
-            "quotable_quotes": Quote.objects.exclude( faved_users = User.objects.get( id = request.session['logged_in_user_id'] ) ),
-            "fav_quotes": Quote.objects.filter( faved_users = User.objects.get( id = request.session['logged_in_user_id'] ) )
+            "alias": user.alias,
+            "quotable_quotes": Quote.objects.exclude( faved_users = user ), #>> is there a short version?
+            "fav_quotes": user.faved_quotes.all()
         }
         print '*'*25, 'QUOTES, LOGGES IN USER:', request.session['logged_in_user_id']
         
         return render( request, "python_belt/quotes.html", page_data )
 
-def quote_create( request ):
+def quote_fav( request, id ):
     if not request.session['logged_in_user_id']:
         return redirect( "/python_belt" )
     else:
-        errors = Quote.objects.validator( request.POST, request.session['logged_in_user_id'] )
+        q = Quote.objects.get( id = id )
+        u = User.objects.get( id = request.session['logged_in_user_id'] )
+        u.faved_quotes.add(q)
         return redirect( "/python_belt/quotes" )
 
+def quote_unfav( request, id ):
+    if not request.session['logged_in_user_id']:
+        return redirect( "/python_belt" )
+    else:
+        q = Quote.objects.get( id = id )
+        u = User.objects.get( id = request.session['logged_in_user_id'] )
+        u.faved_quotes.remove(q)
+        return redirect( "/python_belt/quotes" )
+
+def quote_destroy( request, id ):
+    if not request.session['logged_in_user_id']:
+        return redirect( "/python_belt" )
+    else:
+        q = Quote.objects.get( id = id )
+        q.delete()
+        return redirect( "/python_belt/quotes" )
+
+def quote_create( request ):
+    if not request.session['logged_in_user_id']:
+        return redirect( "/python_belt" )
+    else: # REDIRECTING BACK TO QUOTES IN ANY CASE, AND SHOWING ERRORS IF ANY
+        errors = Quote.objects.validator( request.POST, request.session['logged_in_user_id'] )
+        messages.error( request, errors )
+        return redirect( "/python_belt/quotes" )
 
 def user_show( request, id ):
     if not request.session['logged_in_user_id']:
         return redirect( "/python_belt" )
     else:
+        u = User.objects.get( id = id )
         page_data = {
-            "count": Quote.objects.filter( user = User.objects.get( id = request.session['logged_in_user_id'] ) ).count(),
-            "fav_quotes": Quote.objects.filter( faved_users = User.objects.get( id = request.session['logged_in_user_id'] ) ),
             "alias": User.objects.get( id = request.session['logged_in_user_id'] ).alias,
-            "fav_quotes": Quote.objects.all()
+            "count": u.quotes.all().count(),
+            "quotes": u.quotes.all(),
+            "posted_by": User.objects.get( id = id ).alias
         }
 
         return render( request, "python_belt/user.html", page_data )

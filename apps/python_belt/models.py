@@ -15,9 +15,6 @@ class UserManager( models.Manager ):
         if len( post_data['name'] ) < nlen_min: # LENGTH
             errors["name"] = "Name cannot be less than " + str( nlen_min ) + " characters. "
 
-        # elif not str.isalpha( str( post_data['name'] ) ): # CONVENTIONS
-        #     errors["name"] = "Invalid characters in the name. "
-    
         # VALIDATE ALIAS
         if len( post_data['alias'] ) < nlen_min: # LENGTH
             errors["alias"] = "Alias cannot be less than " + str( nlen_min ) + " characters. "
@@ -72,13 +69,22 @@ class UserManager( models.Manager ):
 class QuoteManager( models.Manager ):
     def validator( self, post_data, user_id ):
         errors = {}
-        Quote.objects.create(
-            author = post_data['author'],
-            content = post_data['content'],
-            user = User.objects.get( id = user_id )
-        )
-        return errors
+        alen_min = 4
+        clen_min = 11
 
+        if len( str( post_data['author'] ) ) < alen_min:
+            errors["author"] = "Author name should have at least " + str( alen_min ) + " characters"
+        if len( str( post_data['content'] ) ) < clen_min:
+            errors["content"] = "Quote should have at least " + str( clen_min ) + " characters"
+        
+        if errors:
+            return errors
+        else:
+            Quote.objects.create(
+                author = post_data['author'],
+                content = post_data['content'],
+                user = User.objects.get( id = user_id )
+            )
 
 class User( models.Model ):
     name = models.CharField( max_length = 255 )

@@ -8,21 +8,20 @@
 </head>
 <body>
     <div class="header">
-        <p>Welcome, {{ alias }}</p>
+        <p>Welcome, {{ alias }}!</p>
         <a href="/python_belt/logout">Logout</a>
     </div>
-    {% if messages %}
-        {% for msg in messages %}
-            {{ msg.message }}
-        {% endfor %}
-    {% endif %}
+    
     <h1>Quotable Quotes</h1>
 
     {% for quote in quotable_quotes %}
         <hr>
-        {{ quote.content }}
+        <p>{{ quote.author }}: {{ quote.content }}</p>
         <p>Posted by <a href="/python_belt/users/{{ quote.user.id }}/show">{{ quote.user.alias }}</a></p> 
-        <a class="action_link" href="quotes/{{ quote.id }}/fav">Add to my list</a> 
+        <a class="action_link" href="quotes/{{ quote.id }}/fav">Add to my list</a>
+        {% if quote.user.id == request.session.logged_in_user_id %}
+            <a class="action_link" href="quotes/{{ quote.id }}/destroy">Delete</a>
+        {% endif %}
     {% endfor %}
 
     <hr>
@@ -32,9 +31,18 @@
         {{ quote.content }}
         <p>Posted by <a href="/python_belt/users/{{ quote.user.id }}/show">{{ quote.user.alias }}</a></p> 
         <a class="action_link" href="quotes/{{ quote.id }}/unfav">Remove from my list</a> 
+        {% if quote.user.id == request.session.logged_in_user_id %}
+            <a class="action_link" href="quotes/{{ quote.id }}/destroy">Delete</a>
+        {% endif %}
     {% endfor %}
     
     <hr>
+
+    {% if messages %}
+        {% for msg in messages %}
+            {{ msg.message }}
+        {% endfor %}
+    {% endif %}
 
     <h2>Contribute a quote:</h2>
 
