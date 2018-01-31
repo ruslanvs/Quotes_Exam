@@ -6,15 +6,13 @@ from .models import User, Quote
 
 
 def index ( request ):
-    
-    return render( request, "python_belt/index.html" )
-    # if not request.session["logged_in_user_id"]: #>> could not make this work yet. Check
-    #     return render( request, "python_belt/index.html" )
-    # else:
-    #     return redirect( "/python_belt/quotes" )
+    if "logged_in_user_id" not in request.session:
+        return render( request, "python_belt/index.html" )
+    else:
+        return redirect( "/python_belt/quotes" )
     
 def signup( request ):
-    if not request.session['logged_in_user_id']: #IF LOGGED IN ALREADY, THEN GOES TO QUOTES
+    if "logged_in_user_id" not in request.session: #IF LOGGED IN ALREADY, THEN GOES TO QUOTES
         errors = User.objects.signup_validation( request.POST )
         if errors:
             messages.error( request, errors )
@@ -28,7 +26,7 @@ def signup( request ):
 
 def login( request ):
     print "*"*25, "VIEWS.PY LOGIN ROUTE", "*"*25
-    if not request.session['logged_in_user_id']:#IF LOGGED IN ALREADY, THEN GOES TO QUOTES
+    if "logged_in_user_id" not in request.session:#IF LOGGED IN ALREADY, THEN GOES TO QUOTES
         errors = User.objects.login_validation( request.POST )
         if errors:
             messages.error( request, errors )
@@ -40,15 +38,15 @@ def login( request ):
         return redirect( "/python_belt/quotes" )
 
 def logout( request ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
-        request.session['logged_in_user_id'] = False
-        # request.session.flush() #>>reinstate once the session initiation gets clarified
+        # request.session['logged_in_user_id'] = False
+        request.session.flush()
         return redirect( "/python_belt" )
 
 def quotes( request ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
         print '*'*25, 'QUOTES, LOGGES IN USER:', request.session['logged_in_user_id']
@@ -63,7 +61,7 @@ def quotes( request ):
         return render( request, "python_belt/quotes.html", page_data )
 
 def quote_fav( request, id ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
         q = Quote.objects.get( id = id )
@@ -72,7 +70,7 @@ def quote_fav( request, id ):
         return redirect( "/python_belt/quotes" )
 
 def quote_unfav( request, id ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
         q = Quote.objects.get( id = id )
@@ -81,7 +79,7 @@ def quote_unfav( request, id ):
         return redirect( "/python_belt/quotes" )
 
 def quote_destroy( request, id ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
         q = Quote.objects.get( id = id )
@@ -89,7 +87,7 @@ def quote_destroy( request, id ):
         return redirect( "/python_belt/quotes" )
 
 def quote_create( request ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else: # REDIRECTING BACK TO QUOTES IN ANY CASE, AND SHOWING ERRORS IF ANY
         errors = Quote.objects.validator( request.POST, request.session['logged_in_user_id'] )
@@ -97,7 +95,7 @@ def quote_create( request ):
         return redirect( "/python_belt/quotes" )
 
 def user_show( request, id ):
-    if not request.session['logged_in_user_id']:
+    if "logged_in_user_id" not in request.session:
         return redirect( "/python_belt" )
     else:
         u = User.objects.get( id = id )
