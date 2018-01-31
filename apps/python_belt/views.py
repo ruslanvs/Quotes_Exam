@@ -4,12 +4,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import User, Quote
 
+
 def index ( request ):
-    print '*'*25, "LOGGED IN USER:", request.session['logged_in_user_id']
-    if not request.session["logged_in_user_id"]:
-        return render( request, "python_belt/index.html" )
-    else:
-        return redirect( "/python_belt/quotes" )
+    
+    return render( request, "python_belt/index.html" )
+    # if not request.session["logged_in_user_id"]: #>> could not make this work yet. Check
+    #     return render( request, "python_belt/index.html" )
+    # else:
+    #     return redirect( "/python_belt/quotes" )
     
 def signup( request ):
     if not request.session['logged_in_user_id']: #IF LOGGED IN ALREADY, THEN GOES TO QUOTES
@@ -42,6 +44,7 @@ def logout( request ):
         return redirect( "/python_belt" )
     else:
         request.session['logged_in_user_id'] = False
+        # request.session.flush() #>>reinstate once the session initiation gets clarified
         return redirect( "/python_belt" )
 
 def quotes( request ):
