@@ -53,7 +53,7 @@ def quotes( request ):
         user = User.objects.get( id = request.session['logged_in_user_id'] )
         page_data = {
             "alias": user.alias,
-            "quotable_quotes": Quote.objects.exclude( faved_users = user ), #>> is there a short version?
+            "quotable_quotes": Quote.objects.exclude( faved_users = user ),
             "fav_quotes": user.faved_quotes.all()
         }
         print '*'*25, 'QUOTES, LOGGES IN USER:', request.session['logged_in_user_id']
